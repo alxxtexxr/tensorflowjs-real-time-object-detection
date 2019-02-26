@@ -31,3 +31,21 @@
     transform: rotate(360deg);
   }
 }
+
+.loader {
+  position: fixed;
+  z-index: 99;
+  left: 50%;
+  top: 0;
+  background: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0 0 4px 4px;
+  transform: translate(-50%);
+}
+
+.fixed {
+  position: fixed;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%);
+}
