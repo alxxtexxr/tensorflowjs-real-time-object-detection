@@ -11,17 +11,16 @@ class App extends Component {
   canvasRef = React.createRef();
 
   componentDidMount() {
-    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       const webCamPromise = navigator.mediaDevices
         .getUserMedia({
           audio: false,
           video: {
-            facingMode: "user"
+            facingMode: "back"
           }
         })
         .then((stream) => {
           window.stream = stream;
-
           this.videoRef.current.srcObject = stream;
 
           return new Promise((resolve, reject) => {
@@ -94,24 +93,49 @@ class App extends Component {
     });
   }
 
+  /* Change facing mode */
+  changeFacingMode = (facingMode) => {
+    if(this.videoRef.current.srcObject) {
+      this.videoRef.current.srcObject
+        .getTracks()
+        .forEach((track) => track.stop());
+
+      this.videoRef.current.srcObject = null;
+    }
+
+    navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          facingMode: facingMode,
+        }
+      })
+      .then((stream) => this.videoRef.current.srcObject = stream);
+  }
+
   render() {
     return (
       <div className="App">
-        <video 
-          autoPlay
-          playsInline
-          muted
-          ref={this.videoRef}
-          width="360"
-          height="270"
-          className="fixed"
-        />
-        <canvas 
-          ref={this.canvasRef}
-          width="360"
-          height="270"
-          className="fixed"
-        />
+        <div id="preview">
+          <video
+            autoPlay
+            playsInline
+            muted
+            ref={this.videoRef}
+            width="360"
+            height="270"
+            className="fixed"
+          />
+          <canvas
+            ref={this.canvasRef}
+            width="360"
+            height="270"
+            className="fixed"
+          />
+        </div>
+        <div id="button-group">
+          <button id="btn-user" onClick={() => this.changeFacingMode('user')}>User (Front)</button>
+          <button id="btn-enviroment" onClick={() => this.changeFacingMode('enviroment')}>Enviroment (Back)</button>
+        </div>
       </div>
     );
   }

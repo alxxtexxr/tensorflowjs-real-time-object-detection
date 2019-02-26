@@ -32,19 +32,29 @@
   }
 }
 
-.loader {
-  position: fixed;
-  z-index: 99;
-  left: 50%;
-  top: 0;
-  background: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 0 0 4px 4px;
-  transform: translate(-50%);
+/* Custom styles starts here */
+button {
+  background: #eee;
+  font-size: 12px;
+  margin: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+#button-group {
+  width: 360px;
+  margin: auto;
+  padding: 0.25rem;
+}
+
+#preview {
+  position: relative;
+  height: 270px;
 }
 
 .fixed {
-  position: fixed;
+  position: absolute;
   left: 50%;
   top: 0;
   transform: translate(-50%);
