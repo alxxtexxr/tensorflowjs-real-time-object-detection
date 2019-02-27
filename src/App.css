@@ -50,7 +50,12 @@ button {
 
 #preview {
   position: relative;
-  height: 270px;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%);
+  background: red;
+  width: 360px;
+  height: 482px;
 }
 
 .fixed {

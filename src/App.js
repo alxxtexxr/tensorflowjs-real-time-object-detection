@@ -7,6 +7,11 @@ import * as cocoSsd from "@tensorflow-models/coco-ssd";
 import "@tensorflow/tfjs";
 
 class App extends Component {
+  state = {
+    btnDeviceId: null,
+    model: null,
+  }
+
   videoRef = React.createRef();
   canvasRef = React.createRef();
 
@@ -14,14 +19,27 @@ class App extends Component {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       const webCamPromise = navigator.mediaDevices
         .getUserMedia({
-          audio: false,
-          video: {
-            facingMode: "back"
-          }
+          video: true
         })
         .then((stream) => {
           window.stream = stream;
           this.videoRef.current.srcObject = stream;
+
+          navigator.mediaDevices
+            .enumerateDevices()
+            .then((devices) => {
+              devices
+                .filter((device) => device.kind === "videoinput")
+                .forEach((device) => {
+                  this.setState({
+                    btnDeviceId: (
+                      <button onClick={() => this.changeDevice(device.deviceId)}>
+                        {device.label}
+                      </button>
+                    )
+                  })
+                })
+            });
 
           return new Promise((resolve, reject) => {
             this.videoRef.current.onloadedmetadata = () => {
@@ -34,6 +52,9 @@ class App extends Component {
 
       Promise.all([modelPromise, webCamPromise])
         .then((values) => {
+          this.setState({
+            model: 1,
+          })
           this.detectFrame(this.videoRef.current, values[0]);
         })
         .catch((error) => {
@@ -95,7 +116,7 @@ class App extends Component {
 
   /* Change facing mode */
   changeFacingMode = (facingMode) => {
-    if(this.videoRef.current.srcObject) {
+    if (this.videoRef.current.srcObject) {
       this.videoRef.current.srcObject
         .getTracks()
         .forEach((track) => track.stop());
@@ -112,6 +133,25 @@ class App extends Component {
       .then((stream) => this.videoRef.current.srcObject = stream);
   }
 
+  /* Change device */
+  changeDevice = (deviceId) => {
+    if (this.videoRef.current.srcObject) {
+      this.videoRef.current.srcObject
+        .getTracks()
+        .forEach((track) => track.stop());
+
+      this.videoRef.current.srcObject = null;
+    }
+
+    navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          deviceId: deviceId,
+        }
+      })
+      .then((stream) => this.videoRef.current.srcObject = stream);
+  }
+
   render() {
     return (
       <div className="App">
@@ -122,20 +162,39 @@ class App extends Component {
             muted
             ref={this.videoRef}
             width="360"
-            height="270"
+            height="482"
             className="fixed"
           />
           <canvas
             ref={this.canvasRef}
             width="360"
-            height="270"
+            height="482"
             className="fixed"
           />
         </div>
+        <hr/>
         <div id="button-group">
           <button id="btn-user" onClick={() => this.changeFacingMode('user')}>User (Front)</button>
           <button id="btn-enviroment" onClick={() => this.changeFacingMode('enviroment')}>Enviroment (Back)</button>
+          <button id="btn-left" onClick={() => this.changeFacingMode('left')}>Left</button>
+          <button id="btn-right" onClick={() => this.changeFacingMode('right')}>Right</button>
+          <button id="btn-front" onClick={() => this.changeFacingMode('front')}>Front</button>
+          <button id="btn-back" onClick={() => this.changeFacingMode('back')}>Back</button>
         </div>
+        {this.state.btnDeviceId && (
+          <div>
+            <hr />
+            <div id="btnDeviceIdContainer">
+              {this.state.btnDeviceId}
+            </div>
+          </div>
+        )}
+        {!this.state.model && (
+          <div>
+            <hr />
+            Loading model...
+          </div>
+        )}
       </div>
     );
   }
