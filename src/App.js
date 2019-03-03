@@ -10,7 +10,7 @@ class App extends Component {
     btnDeviceId: null,
     model: null,
     width: 360,
-    height: 482,
+    height: 480,
   }
 
   videoRef = React.createRef();
