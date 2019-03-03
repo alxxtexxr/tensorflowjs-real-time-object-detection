@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 // Import Libraries
@@ -10,6 +9,8 @@ class App extends Component {
   state = {
     btnDeviceId: null,
     model: null,
+    width: 360,
+    height: 482,
   }
 
   videoRef = React.createRef();
@@ -161,40 +162,43 @@ class App extends Component {
             playsInline
             muted
             ref={this.videoRef}
-            width="360"
-            height="482"
+            width={this.state.width}
+            height={this.state.height}
             className="fixed"
           />
           <canvas
             ref={this.canvasRef}
-            width="360"
-            height="482"
+            width={this.state.width}
+            height={this.state.height}
             className="fixed"
           />
         </div>
-        <hr/>
-        <div id="button-group">
+        {/* <div id="button-group">
           <button id="btn-user" onClick={() => this.changeFacingMode('user')}>User (Front)</button>
           <button id="btn-enviroment" onClick={() => this.changeFacingMode('enviroment')}>Enviroment (Back)</button>
           <button id="btn-left" onClick={() => this.changeFacingMode('left')}>Left</button>
           <button id="btn-right" onClick={() => this.changeFacingMode('right')}>Right</button>
           <button id="btn-front" onClick={() => this.changeFacingMode('front')}>Front</button>
           <button id="btn-back" onClick={() => this.changeFacingMode('back')}>Back</button>
-        </div>
+        </div> */}
         {this.state.btnDeviceId && (
-          <div>
-            <hr />
+          <div class="btn-device-container">
+            <p>
+              Click button below to access back camera
+            </p>
             <div id="btnDeviceIdContainer">
               {this.state.btnDeviceId}
             </div>
           </div>
         )}
         {!this.state.model && (
-          <div>
-            <hr />
+          <div class="loader" style={{width: this.state.width, height: this.state.height}}>
             Loading model...
           </div>
         )}
+        <footer>
+          &copy; FourOhFour 2019
+        </footer>
       </div>
     );
   }
